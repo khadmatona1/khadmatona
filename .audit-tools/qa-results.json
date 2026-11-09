@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "name": "tablet search button visible and usable",
+      "pass": true
+    },
+    {
+      "name": "mobile filters collapse and show results before fold",
+      "pass": true
+    },
+    {
+      "name": "search, sorting and browser back keep criteria in sync",
+      "pass": true
+    },
+    {
+      "name": "mobile menu traps focus and restores it on escape",
+      "pass": true
+    },
+    {
+      "name": "property inquiry only exposes one form at a time",
+      "pass": true
+    },
+    {
+      "name": "registration compresses phone photos and accepts empty email",
+      "pass": true
+    },
+    {
+      "name": "saved alerts submit the selected transaction and rental period",
+      "pass": true
+    },
+    {
+      "name": "rate limiting shows a recoverable inline message",
+      "pass": true
+    },
+    {
+      "name": "Arabic and light theme render without horizontal overflow",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

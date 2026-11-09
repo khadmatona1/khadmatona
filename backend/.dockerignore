@@ -1,0 +1,25 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+vendor
+tests
+# Local artisan storage:link symlink - a dangling/relative symlink like this
+# breaks Docker Desktop's Windows build-context transfer ("invalid file
+# request"); the production entrypoint recreates it inside the container.
+public/storage
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/pail
+.phpunit.cache
+.phpunit.result.cache
+.fleet
+.idea
+.nova
+.vscode
+.zed
+Homestead.json
+Homestead.yaml

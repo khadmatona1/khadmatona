@@ -1,0 +1,12 @@
+const {chromium}=require('playwright');const fs=require('fs');
+(async()=>{const b=await chromium.launch({channel:'msedge',headless:true});const c=await b.newContext({viewport:{width:390,height:844}});const p=await c.newPage();const out={};
+await p.goto('http://localhost:3000/properties',{waitUntil:'networkidle'});await p.screenshot({path:__dirname+'/mobile-filters.png'});
+out.propertyLinks=await p.locator('main a[href^="/properties/"]').evaluateAll(es=>es.map(e=>e.getAttribute('href')));
+await p.locator('#filter-search').fill('zzzz-no-match');await p.waitForTimeout(1200);out.noResults=await p.locator('main').innerText();
+await p.goto('http://localhost:3000'+out.propertyLinks[0],{waitUntil:'networkidle'});await p.screenshot({path:__dirname+'/detail-mobile.png',fullPage:true});out.detail=await p.locator('main').innerText();
+await p.setViewportSize({width:1440,height:1000});await p.screenshot({path:__dirname+'/detail-desktop.png',fullPage:true});
+await p.goto('http://localhost:3000/',{waitUntil:'networkidle'});await p.setViewportSize({width:768,height:1024});await p.waitForTimeout(1000);await p.screenshot({path:__dirname+'/tablet-hero.png'});
+await p.setViewportSize({width:390,height:844});await p.screenshot({path:__dirname+'/mobile-hero.png'});
+out.hiddenDialog=await p.locator('[role="dialog"]').evaluateAll(es=>es.map(e=>({rect:e.getBoundingClientRect().toJSON(),inert:e.inert,ariaHidden:e.getAttribute('aria-hidden'),text:e.innerText})));
+await p.getByRole('button',{name:'FR',exact:true}).filter({visible:true}).click();await p.getByRole('button',{name:'AR',exact:true}).click();await p.waitForTimeout(2000);out.ar=await p.evaluate(()=>({lang:document.documentElement.lang,dir:document.documentElement.dir,text:document.querySelector('main').innerText.slice(0,2500)}));await p.screenshot({path:__dirname+'/ar-mobile.png'});
+fs.writeFileSync(__dirname+'/interactions.json',JSON.stringify(out,null,2));await b.close()})().catch(e=>{console.error(e);process.exitCode=1});

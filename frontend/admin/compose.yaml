@@ -1,0 +1,34 @@
+services:
+    admin:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: 'khadmatona/admin-dev'
+        ports:
+            - '${ADMIN_PORT:-3000}:3000'
+        environment:
+            # Also read server-side (resolveApiUrl()'s SSR branch and
+            # next.config.ts's rewrites()) - "localhost" here would mean this
+            # container itself, not the Windows host where backend/compose.yaml
+            # publishes port 80, so it must be host.docker.internal instead.
+            NEXT_PUBLIC_API_URL: '${NEXT_PUBLIC_API_URL:-http://host.docker.internal}'
+            WATCHPACK_POLLING: 'true'
+            CHOKIDAR_USEPOLLING: 'true'
+        volumes:
+            - '.:/app'
+            # node_modules gets its own volume - native binaries built for
+            # Linux inside the container must not be shadowed by the
+            # Windows host's copy. .next deliberately does NOT get one: a
+            # separate volume let Turbopack's build cache go stale relative
+            # to bind-mounted source edits (changes stopped taking effect
+            # until the volume was dropped) - keeping it in the bind mount
+            # keeps source and build output on the same filesystem view.
+            - 'admin-node-modules:/app/node_modules'
+        networks:
+            - admin
+networks:
+    admin:
+        driver: bridge
+volumes:
+    admin-node-modules:
+        driver: local

@@ -1,0 +1,699 @@
+@import "tailwindcss";
+
+/* Booking cards and portalled calendars inherit the site's theme tokens. */
+.booking-widget {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.booking-stay-fields label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .025em;
+}
+.public-site .booking-stay-fields input {
+  min-height: 24px;
+  font-size: 14px;
+}
+.booking-stay-fields > div > div > div { gap: 2px; }
+.booking-widget .booking-reserve-button {
+  min-height: 48px;
+  border-radius: 9999px !important;
+  background: var(--gradient-gold);
+  color: var(--color-text-on-gold);
+  font-weight: 700;
+  box-shadow: none;
+}
+.booking-widget .booking-reserve-button:disabled { opacity: .65; }
+
+/* Public inquiry controls share the same readable, touch-friendly treatment. */
+.public-site form :is(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea) {
+  border-radius: 12px;
+  font-size: 1rem;
+  min-height: 48px;
+}
+.public-site form button[type="submit"] { border-radius: 12px; min-height: 48px; }
+.public-site :is(input, select, textarea, button, a):focus-visible {
+  outline: 2px solid var(--color-gold-primary);
+  outline-offset: 3px;
+}
+
+/*
+ * KHADMATONA Design System tokens, ported 1:1 from the approved design
+ * system artifact. Do not hand-pick new colors outside this palette -
+ * the six brand colors are mandatory and fixed.
+ */
+:root {
+  /* Tells the browser which native form-control chrome to use (select
+     dropdown popups, checkboxes/radios, scrollbars, number-input spinners)
+     - these follow color-scheme, not your own CSS colors, so without this
+     they render with light-mode-only OS chrome even while data-theme="dark"
+     is active everywhere else. Kept in sync with the token blocks below. */
+  color-scheme: light;
+
+  /* ---- Mandatory brand palette ---- */
+  --color-gold-primary: #b58125;
+  --color-gold-secondary: #e2b84d;
+  --color-ink: #111111;
+  --color-charcoal: #2b2b2b;
+  --color-paper: #ffffff;
+  --color-mist: #f8f8f8;
+
+  /* Metallic sheen built only from the two approved gold tones above (no
+     new hex values) - the repeated primary/secondary/primary stop is what
+     reads as a brushed-gold highlight rather than a flat two-color fade.
+     Same in both themes, so it isn't repeated in the dark/light blocks. */
+  --gradient-gold: linear-gradient(
+    135deg,
+    var(--color-gold-primary) 0%,
+    var(--color-gold-secondary) 50%,
+    var(--color-gold-primary) 100%
+  );
+
+  /* ---- Derived semantic colors (state only, never brand) ---- */
+  --color-success: #3f6b4a;
+  --color-success-surface: #eaf2ec;
+  --color-warning: #b8611f;
+  --color-warning-surface: #fbeee3;
+  --color-error: #9e3a34;
+  --color-error-surface: #f8eae9;
+  --color-info: #43587a;
+  --color-info-surface: #eaeef4;
+
+  /* ---- Theme tokens (light default) ---- */
+  --color-bg: var(--color-paper);
+  --color-surface: var(--color-paper);
+  --color-surface-muted: var(--color-mist);
+  --color-surface-sunken: #f1eee6;
+  /* Deeper than surface-muted in dark mode specifically (true near-black,
+     not charcoal) - for hero-adjacent bands that want a more dramatic
+     dark tone in dark mode while still being a normal light surface in
+     light mode, same as surface-muted. */
+  --color-surface-deep: var(--color-mist);
+  --color-text: var(--color-ink);
+  --color-text-muted: #5b5750;
+  --color-text-on-gold: var(--color-ink);
+  --color-text-on-dark: var(--color-paper);
+  --color-border: #e7e2d6;
+  --color-border-strong: #d8d0be;
+
+  /* ---- Radius ---- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* ---- Shadows (gold-tinted) ---- */
+  --shadow-sm: 0 1px 2px rgba(17, 17, 17, 0.07);
+  --shadow-md:
+    0 6px 16px rgba(17, 17, 17, 0.09), 0 1px 3px rgba(181, 129, 37, 0.1);
+  --shadow-lg:
+    0 20px 44px rgba(17, 17, 17, 0.14), 0 4px 10px rgba(181, 129, 37, 0.1);
+  --shadow-gold: 0 10px 28px rgba(181, 129, 37, 0.28);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --color-bg: var(--color-ink);
+    --color-surface: #151515;
+    --color-surface-muted: var(--color-charcoal);
+    --color-surface-deep: var(--color-ink);
+    --color-surface-sunken: #1e1a12;
+    --color-text: var(--color-paper);
+    --color-text-muted: #c9c2b0;
+    --color-text-on-dark: var(--color-ink);
+    --color-border: #3a3225;
+    --color-border-strong: #4a3f2b;
+    --color-success-surface: #182620;
+    --color-warning-surface: #2a1e12;
+    --color-error-surface: #2a1614;
+    --color-info-surface: #171f2c;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md:
+      0 6px 18px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(226, 184, 77, 0.12);
+    --shadow-lg:
+      0 24px 48px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(226, 184, 77, 0.14);
+    --shadow-gold: 0 10px 30px rgba(226, 184, 77, 0.3);
+  }
+}
+
+/* An explicit in-app toggle (persisted to localStorage, applied via
+   data-theme on <html>) always wins over the OS-level media query above -
+   same token values, just keyed off the attribute instead of the media
+   query so a user who prefers light-in-a-dark-OS (or vice versa) is
+   respected. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: var(--color-ink);
+  --color-surface: #151515;
+  --color-surface-muted: var(--color-charcoal);
+  --color-surface-deep: var(--color-ink);
+  --color-surface-sunken: #1e1a12;
+  --color-text: var(--color-paper);
+  --color-text-muted: #c9c2b0;
+  --color-text-on-dark: var(--color-ink);
+  --color-border: #3a3225;
+  --color-border-strong: #4a3f2b;
+  --color-success-surface: #182620;
+  --color-warning-surface: #2a1e12;
+  --color-error-surface: #2a1614;
+  --color-info-surface: #171f2c;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md:
+    0 6px 18px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(226, 184, 77, 0.12);
+  --shadow-lg:
+    0 24px 48px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(226, 184, 77, 0.14);
+  --shadow-gold: 0 10px 30px rgba(226, 184, 77, 0.3);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: var(--color-paper);
+  --color-surface: var(--color-paper);
+  --color-surface-muted: var(--color-mist);
+  --color-surface-deep: var(--color-mist);
+  --color-surface-sunken: #f1eee6;
+  --color-text: var(--color-ink);
+  --color-text-muted: #5b5750;
+  --color-text-on-dark: var(--color-paper);
+  --color-border: #e7e2d6;
+  --color-border-strong: #d8d0be;
+  --color-success-surface: #eaf2ec;
+  --color-warning-surface: #fbeee3;
+  --color-error-surface: #f8eae9;
+  --color-info-surface: #eaeef4;
+  --shadow-sm: 0 1px 2px rgba(17, 17, 17, 0.07);
+  --shadow-md:
+    0 6px 16px rgba(17, 17, 17, 0.09), 0 1px 3px rgba(181, 129, 37, 0.1);
+  --shadow-lg:
+    0 20px 44px rgba(17, 17, 17, 0.14), 0 4px 10px rgba(181, 129, 37, 0.1);
+  --shadow-gold: 0 10px 28px rgba(181, 129, 37, 0.28);
+}
+
+/* Maps every design token above into Tailwind v4's utility generator, so
+   e.g. --color-gold-primary becomes bg-gold-primary / text-gold-primary. */
+@theme inline {
+  --color-gold-primary: var(--color-gold-primary);
+  --color-gold-secondary: var(--color-gold-secondary);
+  --color-ink: var(--color-ink);
+  --color-charcoal: var(--color-charcoal);
+  --color-paper: var(--color-paper);
+  --color-mist: var(--color-mist);
+
+  --color-success: var(--color-success);
+  --color-success-surface: var(--color-success-surface);
+  --color-warning: var(--color-warning);
+  --color-warning-surface: var(--color-warning-surface);
+  --color-error: var(--color-error);
+  --color-error-surface: var(--color-error-surface);
+  --color-info: var(--color-info);
+  --color-info-surface: var(--color-info-surface);
+
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-surface-deep: var(--color-surface-deep);
+  --color-surface-sunken: var(--color-surface-sunken);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-on-gold: var(--color-text-on-gold);
+  --color-text-on-dark: var(--color-text-on-dark);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-gold: var(--shadow-gold);
+
+  /* Registers under Tailwind's background-image namespace (not color), so
+     `bg-gradient-gold` is a real generated utility - critical because only
+     real utilities support variant prefixes like hover:/group-hover:/after:,
+     which a hand-written plain CSS class never would. */
+  --background-image-gradient-gold: var(--gradient-gold);
+
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-inter), -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+  --font-arabic: var(--font-arabic), "Segoe UI", Tahoma, sans-serif;
+  /* Hero accent word only - Playfair Display by default, swapped for the
+     calligraphic Arabic face under rtl below. */
+  --font-accent: var(--font-playfair), Georgia, "Times New Roman", serif;
+}
+
+/* Arabic has no serif/sans split the way Latin does, so both the display
+   and body roles resolve to the same self-hosted Arabic UI face here -
+   every existing font-display/font-body usage across the app picks this
+   up automatically, no component changes needed. */
+html[dir="rtl"] {
+  --font-display: var(--font-arabic), "Segoe UI", Tahoma, sans-serif;
+  --font-body: var(--font-arabic), "Segoe UI", Tahoma, sans-serif;
+  --font-accent: var(--font-arabic-accent), var(--font-arabic), "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  /* Defensive clamp: every wide element (tables, charts) already owns its
+     own overflow-x-auto container, so the page itself should never need
+     to scroll horizontally - this just guards against a stray regression. */
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+/* Safari (desktop and iOS) is the odd one out - it shows the plain arrow
+   cursor on <button> elements instead of the pointer/hand every other
+   browser already uses, since native <a> links get it automatically. This
+   makes every interactive control (header nav toggles, theme/locale
+   switches, popover triggers, etc.) consistent across browsers. */
+button:not(:disabled),
+[role="button"],
+summary {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--color-gold-secondary);
+  color: var(--color-ink);
+}
+
+/* Luxury metallic-gold treatment (see --gradient-gold and the
+   --background-image-gradient-gold registration above) for the
+   highest-impact brand touchpoints - primary CTAs and solid-gold-fill
+   elements everywhere, plus a handful of flagship display headings/accents.
+   bg-gradient-gold itself is a real generated Tailwind utility (registered
+   above), so hover:/group-hover:/after: variants work on it; text fill
+   needs the extra background-clip trick below, which stays a plain class
+   since it's never combined with a variant. */
+.text-gradient-gold {
+  background-image: var(--gradient-gold);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Swaps between two real logo images (one with a black wordmark for light
+   backgrounds, one with a white wordmark for dark backgrounds) instead of
+   trying to recolor a single asset - same attribute/media-query precedence
+   as every other theme token above (explicit `data-theme` wins over the
+   OS-level `prefers-color-scheme` fallback). */
+.logo-light {
+  display: block;
+}
+.logo-dark {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  .logo-light {
+    display: none;
+  }
+  .logo-dark {
+    display: block;
+  }
+}
+:root[data-theme="dark"] .logo-light {
+  display: none;
+}
+:root[data-theme="dark"] .logo-dark {
+  display: block;
+}
+:root[data-theme="light"] .logo-light {
+  display: block;
+}
+:root[data-theme="light"] .logo-dark {
+  display: none;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(181, 129, 37, 0.35);
+  border-radius: var(--radius-xs);
+}
+
+.skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--color-surface-muted) 30%,
+    var(--color-surface-sunken) 50%,
+    var(--color-surface-muted) 70%
+  );
+  background-size: 220% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -20% 0;
+  }
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: page-fade-in 0.35s ease-out;
+}
+
+/* Hero: slow, one-way zoom on the background photograph - holds at the
+   zoomed frame (forwards) rather than looping, so it reads as a deliberate
+   cinematic settle rather than a distracting animation. */
+@keyframes hero-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.animate-hero-zoom {
+  animation: hero-zoom 20s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+/* Hero: staggered fade-up for the eyebrow/title/subtitle/search, driven by
+   each element's own animation-delay (set inline per element). */
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-reveal {
+  opacity: 0;
+  animation: hero-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Sell/rent property request wizard: fade-up transition each time the
+   visible step changes (element is keyed by step number, so this replays
+   on every Next/Back). */
+@keyframes step-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-fade-in {
+  animation: step-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Blog post body - the site has no @tailwindcss/typography plugin, so
+   Markdown output (react-markdown, see app/(public)/blog/[slug]/page.tsx)
+   is styled directly against theme tokens here instead of a `prose` class. */
+.prose-content > :first-child {
+  margin-top: 0;
+}
+
+.prose-content h1,
+.prose-content h2,
+.prose-content h3 {
+  font-family: var(--font-display, inherit);
+  font-weight: 600;
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.prose-content h1 {
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  font-size: 1.6rem;
+}
+
+.prose-content h2 {
+  margin-top: 1.8em;
+  margin-bottom: 0.6em;
+  font-size: 1.35rem;
+}
+
+.prose-content h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-size: 1.15rem;
+}
+
+.prose-content p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.prose-content a {
+  color: var(--color-gold-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-content ul,
+.prose-content ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-inline-start: 1.4em;
+}
+
+.prose-content ul {
+  list-style-type: disc;
+}
+
+.prose-content ol {
+  list-style-type: decimal;
+}
+
+.prose-content li + li {
+  margin-top: 0.35em;
+}
+
+.prose-content blockquote {
+  margin: 1.4em 0;
+  padding-inline-start: 1em;
+  border-inline-start: 3px solid var(--color-gold-primary);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.prose-content code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25em;
+  background: var(--color-surface-muted);
+  font-size: 0.88em;
+}
+
+.prose-content pre {
+  margin: 1.4em 0;
+  padding: 1em;
+  border-radius: 0.5em;
+  background: var(--color-surface-muted);
+  overflow-x: auto;
+}
+
+.prose-content pre code {
+  padding: 0;
+  background: none;
+}
+
+.prose-content img {
+  margin: 1.4em 0;
+  border-radius: 0.5em;
+}
+
+.prose-content hr {
+  margin: 2em 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.prose-content table {
+  width: 100%;
+  margin: 1.4em 0;
+  border-collapse: collapse;
+  font-size: 0.92em;
+}
+
+.prose-content th,
+.prose-content td {
+  padding: 0.5em 0.75em;
+  border: 1px solid var(--color-border);
+  text-align: start;
+}
+
+.prose-content th {
+  background: var(--color-surface-muted);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Popup system (ModalRoot, src/components/ui/modal-root.tsx) - Radix Dialog
+   exposes data-state="open"/"closed" on the overlay/content during its
+   mount/unmount transition, which these rules key off for a simple
+   fade+scale instead of relying on a Tailwind animation plugin this project
+   doesn't have installed. */
+.modal-overlay {
+  animation: modal-overlay-in 0.15s ease-out;
+}
+.modal-overlay[data-state="closed"] {
+  animation: modal-overlay-out 0.15s ease-in;
+}
+
+.modal-content {
+  animation: modal-content-in 0.15s ease-out;
+}
+.modal-content[data-state="closed"] {
+  animation: modal-content-out 0.15s ease-in;
+}
+
+/* Success/error alerts anchor to the bottom of the page instead of center -
+   everything else (confirm dialogs, view/edit popups) stays centered. */
+.modal-content-bottom {
+  animation: modal-content-bottom-in 0.15s ease-out;
+}
+.modal-content-bottom[data-state="closed"] {
+  animation: modal-content-bottom-out 0.15s ease-in;
+}
+
+@keyframes modal-overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes modal-overlay-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes modal-content-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+}
+@keyframes modal-content-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+}
+@keyframes modal-content-bottom-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+}
+@keyframes modal-content-bottom-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+}
+
+/* Combobox popover (src/components/ui/combobox.tsx) - opacity-only, since
+   Radix Popover already sets its own positioning `transform` inline; a
+   translate/scale here would fight that instead of just fading in place. */
+.combobox-content {
+  animation: combobox-content-in 0.12s ease-out;
+}
+.combobox-content[data-state="closed"] {
+  animation: combobox-content-out 0.1s ease-in;
+}
+@keyframes combobox-content-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes combobox-content-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Dashboard tables (Table, src/components/ui/table.tsx) are wide (5-6
+   columns) - below sm, instead of forcing an awkward horizontal scroll
+   where the header can end up out of view from the cells it labels, each
+   row collapses into a stacked card with a small label before every value
+   (via each TableCell's optional `label` prop -> `data-label` attribute). */
+@media (max-width: 639px) {
+  .responsive-table table {
+    min-width: 0;
+  }
+  .responsive-table thead {
+    display: none;
+  }
+  .responsive-table tr {
+    display: block;
+    padding: 0.75rem 1rem;
+  }
+  .responsive-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.375rem 0;
+    text-align: end;
+    /* Overrides desktop-only max-w-[...]/truncate on specific cells (e.g.
+       the title column) - no tight column width to justify ellipsis here. */
+    max-width: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+  }
+  /* No label (e.g. the actions column) means a single flex child, which
+     `justify-content: space-between` would otherwise leave hugging the
+     start edge instead of lining up with every labeled value above it. */
+  .responsive-table td:not([data-label]) {
+    justify-content: flex-end;
+  }
+  .responsive-table td[data-label]::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    text-align: start;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+}

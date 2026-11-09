@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/sanctum/:path*",
+      "destination": "https://khadmatona-api.onrender.com/sanctum/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://khadmatona-api.onrender.com/api/:path*"
+    }
+  ]
+}

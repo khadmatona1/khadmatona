@@ -1,0 +1,9 @@
+{
+  "checks": [
+    {
+      "name": "registration compresses phone photos and accepts empty email",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

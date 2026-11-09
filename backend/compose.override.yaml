@@ -1,0 +1,5 @@
+services:
+    laravel.test:
+        volumes:
+            # Expose local uploads on Windows drives that cannot create symlinks.
+            - './storage/app/public:/var/www/html/public/storage'

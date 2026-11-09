@@ -1,0 +1,60 @@
+# Monorepo root .gitignore - backend/ is the Laravel API, frontend/ is
+# reserved for the future SPA. Paths are prefixed since this file lives
+# at the repo root, not inside backend/ itself.
+
+# --- backend/ (Laravel) ---
+backend/*.log
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/.phpactor.json
+backend/.phpunit.result.cache
+backend/.fleet
+backend/.idea
+backend/.nova
+backend/.phpunit.cache
+backend/.vscode
+backend/.zed
+backend/auth.json
+backend/node_modules
+backend/public/build
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/storage/pail
+backend/storage/logs/*
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+backend/vendor
+backend/Homestead.json
+backend/Homestead.yaml
+backend/Thumbs.db
+backend/.DS_Store
+
+# --- frontend/ (reserved for the future SPA) ---
+frontend/node_modules
+frontend/dist
+frontend/build
+frontend/.env
+
+# --- production deployment (docker-compose.prod.yml alternative) ---
+.env.prod
+
+# --- OS/editor noise, anywhere in the repo ---
+.DS_Store
+Thumbs.db
+
+# --- AI assistant local context (never committed) ---
+CLAUDE.md
+COOLIFY_DEPLOYMENT.md
+
+# Temporary media processing files
+backend/storage/media-library/temp/
+
+CLAUDE.md
+**/CLAUDE.md
+.env
+.env.*
+!.env.example
+node_modules/
+.next/

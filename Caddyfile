@@ -1,0 +1,11 @@
+# Edge reverse proxy for both apps. Caddy provisions and renews Let's
+# Encrypt certificates for both domains automatically on first request - no
+# certbot, no cron renewal job - as long as both domains' DNS A/AAAA records
+# already point at this VPS and ports 80/443 are reachable from the internet.
+{$API_DOMAIN} {
+    reverse_proxy backend:80
+}
+
+{$APP_DOMAIN} {
+    reverse_proxy frontend:3000
+}
