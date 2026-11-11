@@ -37,11 +37,15 @@ class PropertyResource extends JsonResource
             'description' => $this->description,
             // Real photo gallery via spatie/laravel-medialibrary - `medium`
             // is the queued WebP conversion HasMediaConversions registers.
+            // getAvailableUrl() falls back to the original until that queued
+            // conversion has actually been generated (same fallback
+            // getFirstMediaUrl() gives cover_image) - getUrl('medium') would
+            // point at a file that doesn't exist yet and 404.
             // Each image carries its own media `id` so the admin edit form
             // can target DELETE /properties/{property}/images/{media}.
             'images' => $this->getMedia('gallery')->map(fn ($media) => [
                 'id' => $media->id,
-                'url' => $media->getUrl('medium'),
+                'url' => $media->getAvailableUrl(['medium']),
             ])->values(),
             'cover_image' => $this->getFirstMediaUrl('gallery', 'medium') ?: null,
             'created_at' => $this->created_at,

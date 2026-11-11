@@ -2,8 +2,11 @@
 
 use App\Core\Lookup\Domain\Models\City;
 use App\Models\User;
+use App\Modules\Property\Domain\Enums\PropertyApprovalStatus;
+use App\Modules\Property\Domain\Enums\PropertyStatus;
 use App\Modules\Property\Domain\Models\Property;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
@@ -44,6 +47,51 @@ test('an admin can upload gallery images when creating a property', function () 
     $show->assertOk()
         ->assertJsonCount(2, 'data.images')
         ->assertJsonPath('data.cover_image', fn ($url) => is_string($url) && $url !== '');
+});
+
+test('gallery image urls fall back to the original until the medium conversion is generated', function () {
+    // The `medium` conversion is queued, so it doesn't exist until a worker
+    // has processed it (or ever, if the worker is down or the job fails).
+    // Queue::fake() reproduces that:
+    // the conversion job is dispatched but never runs. Regression: images[]
+    // used getUrl('medium') and pointed at a missing file (404 on the
+    // property details page), while cover_image already fell back.
+    Queue::fake();
+
+    $property = Property::factory()->create([
+        'city_id' => $this->city->id,
+        'status' => PropertyStatus::Disponible,
+        'approval_status' => PropertyApprovalStatus::Approved,
+    ]);
+    $property->addMedia(UploadedFile::fake()->image('salon.jpg'))->toMediaCollection('gallery');
+    $media = $property->getFirstMedia('gallery');
+
+    expect($media->hasGeneratedConversion('medium'))->toBeFalse();
+
+    $this->getJson("/api/v1/properties/{$property->id}")
+        ->assertOk()
+        ->assertJsonPath('data.images.0.url', $media->getUrl())
+        ->assertJsonPath('data.cover_image', $media->getUrl());
+
+    $this->actingAs($this->admin)->getJson("/api/v1/dashboard/properties/{$property->id}")
+        ->assertOk()
+        ->assertJsonPath('data.images.0.url', $media->getUrl());
+});
+
+test('gallery image urls use the medium conversion once it is generated', function () {
+    $property = Property::factory()->create([
+        'city_id' => $this->city->id,
+        'status' => PropertyStatus::Disponible,
+        'approval_status' => PropertyApprovalStatus::Approved,
+    ]);
+    $property->addMedia(UploadedFile::fake()->image('salon.jpg'))->toMediaCollection('gallery');
+    $media = $property->getFirstMedia('gallery');
+
+    expect($media->hasGeneratedConversion('medium'))->toBeTrue();
+
+    $this->getJson("/api/v1/properties/{$property->id}")
+        ->assertOk()
+        ->assertJsonPath('data.images.0.url', $media->getUrl('medium'));
 });
 
 test('an admin can delete a single gallery image without affecting the others', function () {

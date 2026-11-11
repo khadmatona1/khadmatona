@@ -46,9 +46,11 @@ class DashboardPropertyResource extends JsonResource
             'bedrooms' => $this->bedrooms,
             'bathrooms' => $this->bathrooms,
             'description' => $this->description,
+            // Falls back to the original until the queued `medium`
+            // conversion exists - see PropertyResource.
             'images' => $this->getMedia('gallery')->map(fn ($media) => [
                 'id' => $media->id,
-                'url' => $media->getUrl('medium'),
+                'url' => $media->getAvailableUrl(['medium']),
             ])->values(),
             'cover_image' => $this->getFirstMediaUrl('gallery', 'medium') ?: null,
             'created_at' => $this->created_at,
