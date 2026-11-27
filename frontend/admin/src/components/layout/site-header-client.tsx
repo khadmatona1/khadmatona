@@ -142,9 +142,9 @@ function ContactMenu({ settings }: { settings: Settings }) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={t("contactUs")}
-        className="flex h-9 items-center justify-center gap-2 rounded-md border border-red-600 bg-red-600 px-2 text-white transition-colors hover:bg-red-700"
+        className="flex h-9 w-9 items-center justify-center rounded-md border border-gold-primary/30 text-text-muted transition-colors hover:border-green-500 hover:bg-green-500 hover:text-white"
       >
-        <Phone className="h-4 w-4" /><span className="hidden whitespace-nowrap text-xs font-medium sm:inline">Maroc Marrakech</span>
+        <Phone className="h-4 w-4" />
       </button>
       {open && (
         <div
@@ -324,9 +324,9 @@ export function SiteHeaderClient({ settings }: { settings: Settings }) {
               <a
                 href={`tel:${settings.contact_phone.replace(/\s+/g, "")}`}
                 aria-label={t("call")}
-                className="flex h-9 items-center justify-center gap-2 rounded-md border border-red-600 bg-red-600 px-2 text-white transition-colors hover:bg-red-700"
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-gold-primary/30 text-text-muted transition-colors hover:border-green-500 hover:bg-green-500 hover:text-white"
               >
-                <Phone className="h-4 w-4" /><span className="hidden whitespace-nowrap text-xs font-medium sm:inline">Maroc Marrakech</span>
+                <Phone className="h-4 w-4" />
               </a>
             )}
             <Dialog.Trigger asChild>
